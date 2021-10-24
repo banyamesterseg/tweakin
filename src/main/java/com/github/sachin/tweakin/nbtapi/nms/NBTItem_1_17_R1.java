@@ -1,15 +1,20 @@
 package com.github.sachin.tweakin.nbtapi.nms;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.github.sachin.tweakin.Tweakin;
-import com.github.sachin.tweakin.betterflee.AnimalFleeTweak;
-import com.github.sachin.tweakin.mobheads.Head;
+import com.github.sachin.tweakin.modules.betterflee.AnimalFleeTweak;
 import com.github.sachin.tweakin.utils.PaperUtils;
+import com.github.sachin.tweakin.utils.ReflectionUtil;
 import com.google.common.base.Enums;
 
 import org.bukkit.Location;
@@ -20,7 +25,6 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Goat;
@@ -39,7 +43,6 @@ import net.minecraft.world.EnumInteractionResult;
 import net.minecraft.world.entity.EntityCreature;
 import net.minecraft.world.entity.EntityInsentient;
 import net.minecraft.world.entity.EntityLiving;
-import net.minecraft.world.entity.ai.attributes.GenericAttributes;
 import net.minecraft.world.entity.ai.goal.PathfinderGoal;
 import net.minecraft.world.entity.ai.goal.PathfinderGoalAvoidTarget;
 import net.minecraft.world.entity.animal.EntityAnimal;
@@ -146,7 +149,7 @@ public class NBTItem_1_17_R1 extends NMSHelper{
         
     }
 
-    public boolean placeItem(Player player, Location location,ItemStack item,BlockFace hitFace,String tweakName){
+    public boolean placeItem(Player player, Location location,ItemStack item,BlockFace hitFace,String tweakName,boolean playSound){
         
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
@@ -158,7 +161,9 @@ public class NBTItem_1_17_R1 extends NMSHelper{
         // nmsItem.a(nmsPlayer, TooltipFlag.a.a).;
         if(result.toString() == "CONSUME"){
             player.swingMainHand();
-            player.getWorld().playSound(location, location.getBlock().getBlockData().getSoundGroup().getPlaceSound(), 1F, 1F);
+            if(playSound){
+                player.getWorld().playSound(location, location.getBlock().getBlockData().getSoundGroup().getPlaceSound(), 1F, 1F);
+            }
             if(tweakName != null){
                 Tweakin plugin = Tweakin.getPlugin();
                 if(plugin.placedBlocksMap.containsKey(tweakName)){

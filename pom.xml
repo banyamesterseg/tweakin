@@ -6,9 +6,8 @@
 
     <groupId>com.github.sachin</groupId>
     <artifactId>Tweakin</artifactId>
-    <version>3.1.2</version>
+    <version>3.5.3</version>
     <packaging>jar</packaging>
-
     
     <name>Tweakin</name>
 
@@ -60,6 +59,10 @@
                                 <relocation>
                                     <pattern>co.aikar.locales</pattern>
                                     <shadedPattern>com.github.sachin.tweakin.locales</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>de.jeff_media.morepersistentdatatypes</pattern>
+                                    <shadedPattern>com.github.sachin.tweakin.morepersistentdatatypes</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -118,6 +121,10 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>jeff-media-gbr</id>
+            <url>https://repo.jeff-media.de/maven2/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -126,6 +133,13 @@
             <artifactId>spigot-api</artifactId>
             <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.jeff_media</groupId>
+            <artifactId>MorePersistentDataTypes</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <!-- WorldGuard -->
         <dependency>
@@ -168,7 +182,7 @@
             <artifactId>spigot</artifactId>
             <version>1.17</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/spigot-1.17.jar</systemPath>
+            <systemPath>${project.basedir}/libs/spigot-1.17.1.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>SpartanAPI</groupId>
@@ -193,13 +207,36 @@
             <scope>provided</scope>
         </dependency>
 
-
-
+        <!-- ExcellentEnchants -->
+        <dependency>
+            <groupId>ExcellentEnchants</groupId>
+            <artifactId>excellentenchants</artifactId>
+            <version>1.17</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ExcellentEnchants.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
 <!--            <scope>compile</scope>-->
         </dependency>
+
+        <!-- <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.8</version>
+            <scope>provided</scope>
+        </dependency> -->
+
+        <dependency>
+            <groupId>AdvancedEnchantments</groupId>
+            <artifactId>advancedenchantments</artifactId>
+            <version>8.6.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/AdvancedEnchantmentsAPI-8.6.4.jar</systemPath>
+            
+        </dependency>
+
     </dependencies>
 </project>

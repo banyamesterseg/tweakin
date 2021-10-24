@@ -4,7 +4,7 @@ main: com.github.sachin.tweakin.Tweakin
 api-version: 1.16
 api: []
 authors: [ sachingorkar ]
-softdepend: [ProtocolLib,Spartan,WorldGuard]
+softdepend: [ProtocolLib,Spartan,WorldGuard,ExcellentEnchants]
 description: A modular plugin with the objective of improving the vanilla gameplay experience
 
 
@@ -18,6 +18,8 @@ permissions:
       tweakin.command.toggle: true
       tweakin.command.givehead: true
       tweakin.command.list: true
+      tweakin.command.addpose: true
+      tweakin.command.removepose: true
   tweakin.infinitybucket.*:
     default: true
     children:
@@ -95,7 +97,21 @@ permissions:
   tweakin.armoredelytra.craft:
     default: true  
   tweakin.villagerdeathmessage.notify:
-    default: true  
-  # tweakin.tradernotify:
-  #   default: true  
+    default: true 
+  tweakin.betterarmorstands.*:
+    default: true   
+    children:
+      tweakin.betterarmorstands.armorswap: true
+      tweakin.betterarmorstands.uuidlockbypass: false
+      tweakin.betterarmorstands.command: true
+  tweakin.armorstandwand.use:
+    default: true   
+  tweakin.shearnametag.use:
+    default: true   
+  tweakin.lavabuckettrashcan.*:
+    default: true
+    children:
+      tweakin.lavabuckettrashcan.dragdrop: true
+      tweakin.lavabuckettrashcan.gui: true
+
 

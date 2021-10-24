@@ -2,12 +2,9 @@ package com.github.sachin.tweakin.nbtapi.nms;
 
 import java.util.List;
 
-import com.github.sachin.tweakin.mobheads.Head;
-
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -42,7 +39,7 @@ public abstract class NMSHelper {
 
     public abstract void attack(Player player,Entity target);
 
-    public abstract boolean placeItem(Player player,Location location,ItemStack item,BlockFace hitFace,String tweakName);
+    public abstract boolean placeItem(Player player,Location location,ItemStack item,BlockFace hitFace,String tweakName,boolean playSound);
 
     public abstract int getColor(String str,int transparency);
 
@@ -57,5 +54,12 @@ public abstract class NMSHelper {
     public abstract boolean isScreamingGoat(Entity entity);
 
     public abstract List<Entity> getEntitiesWithinRadius(int radius,Entity center);
+
+
+
+    public void spawnArmorStand(Location location,double radius) {
+    }
+
+    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {}
 
 }

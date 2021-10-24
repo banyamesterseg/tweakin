@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.github.sachin.tweakin.manager.TweakManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -31,9 +34,12 @@ public abstract class BaseTweak {
             this.shouldEnable = false;
             return;
         }
+        this.onLoad();
         this.reload();
         this.shouldEnable = config.getBoolean("enabled",true);
     }
+
+    
 
     public BaseTweak getInstance(){
         return this;
@@ -87,6 +93,16 @@ public abstract class BaseTweak {
         return false;
     }
 
+    public boolean matchTag(Material mat,List<String> matcher){
+        for(String s : matcher){
+            Tag<Material> tag = Bukkit.getTag("blocks", NamespacedKey.minecraft(s.toLowerCase()),Material.class);
+            if(tag != null && tag.getValues().contains(mat)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     
 
 
@@ -128,4 +144,8 @@ public abstract class BaseTweak {
         this.config = plugin.getConfig().getConfigurationSection(configKey);
         this.shouldEnable = config.getBoolean("enabled");
     }
+
+    public void onDisable(){}
+
+    public void onLoad(){}
 }

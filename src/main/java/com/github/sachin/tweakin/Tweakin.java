@@ -8,27 +8,18 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import com.github.sachin.tweakin.bottledcloud.BottledCloudItem;
-import com.github.sachin.tweakin.bottledcloud.BottledCloudItem.CloudEntity;
 import com.github.sachin.tweakin.bstats.Metrics;
 import com.github.sachin.tweakin.bstats.Metrics.AdvancedPie;
-import com.github.sachin.tweakin.bstats.Metrics.DrilldownPie;
-import com.github.sachin.tweakin.bstats.Metrics.MultiLineChart;
-import com.github.sachin.tweakin.bstats.Metrics.SimpleBarChart;
-import com.github.sachin.tweakin.bstats.Metrics.SimplePie;
 import com.github.sachin.tweakin.commands.CoreCommand;
 import com.github.sachin.tweakin.gui.GuiListener;
-import com.github.sachin.tweakin.lapisintable.LapisData;
-import com.github.sachin.tweakin.lapisintable.LapisInTableTweak;
 import com.github.sachin.tweakin.manager.TweakManager;
-import com.github.sachin.tweakin.mobheads.Head;
+import com.github.sachin.tweakin.modules.lapisintable.LapisData;
+import com.github.sachin.tweakin.modules.mobheads.Head;
 import com.github.sachin.tweakin.nbtapi.NBTAPI;
 import com.github.sachin.tweakin.nbtapi.nms.NMSHelper;
 import com.github.sachin.tweakin.utils.MiscItems;
-import com.sk89q.worldguard.WorldGuard;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -41,6 +32,7 @@ public final class Tweakin extends JavaPlugin {
 
     private static Tweakin plugin;
     private Metrics metrics;
+    
     public boolean isRunningPaper;
     private WGFlagManager wgFlagManager;
     public boolean isWorldGuardEnabled;
@@ -90,7 +82,6 @@ public final class Tweakin extends JavaPlugin {
             return;
             
         }
-        
         reloadMiscItems();
         this.getServer().getPluginManager().registerEvents(new GuiListener(plugin), plugin);
         this.isProtocolLibEnabled = plugin.getServer().getPluginManager().isPluginEnabled("ProtocolLib");
@@ -102,8 +93,10 @@ public final class Tweakin extends JavaPlugin {
         this.tweakManager = new TweakManager(this);
         tweakManager.load();
         ConfigurationSerialization.registerClass(LapisData.class,"LapisData");
+        
         commandManager.getCommandCompletions().registerCompletion("tweakitems", c -> tweakManager.getRegisteredItemNames());
         commandManager.getCommandCompletions().registerCompletion("tweaklist", c -> tweakManager.getTweakNames());
+        
         List<String> headList = Arrays.asList(Head.values()).stream().map(h -> h.toString()).collect(Collectors.toList());
         commandManager.getCommandCompletions().registerCompletion("tweakinheads",c -> headList);
         commandManager.registerCommand(new CoreCommand(this));
@@ -122,13 +115,10 @@ public final class Tweakin extends JavaPlugin {
     @Override
     public void onDisable() {
         if(!isEnabled) return;
-        LapisInTableTweak tweak = (LapisInTableTweak) getTweakManager().getTweakList().get(6);
-        for(TweakItem i: tweakManager.getRegisteredItems()){
-            if(i instanceof BottledCloudItem && i.registered){
-                BottledCloudItem instance = (BottledCloudItem) i;
-                for(CloudEntity entity : instance.clouds.values()){
-                    entity.ticker.removeAll();
-                }
+        
+        for(BaseTweak t : tweakManager.getTweakList()){
+            if(t.registered){
+                t.onDisable();
             }
         }
         if(metrics != null){
@@ -139,9 +129,7 @@ public final class Tweakin extends JavaPlugin {
                 }
             }));
         }
-        if(tweak.registered){
-            tweak.saveLapisData();
-        }
+        
     }
 
     public String getVersion() {

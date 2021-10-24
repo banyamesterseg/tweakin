@@ -24,15 +24,17 @@ op-notifications: true
 armor-right-click:
   enabled: false
 
-# Shift+Left Clicking shulker box or ender-chest in air will show its contents
+# Middle clicking a shulker box in inventory will display its contents as if player opened the shulker itself
 # Permission: 
   # tweakin.shulkerboxclick: permission to allow opening of shulker box
   # tweakin.enderchestclick: permission to allow opening of enderchest
-left-click-shulker-box:
+shulker-box-preview:
   enabled: false
   black-list-worlds: []
   # if set to true players will able to open the enderchest just like shulker-box
   enderchest: true  
+  # if set to true, players will not able to alter items of shulker box they open via this feature
+  preview-only: false
 
 # Create nether portals with any shape,size and with any blocks, remember this only applies to nether portals
 # Permission: tweakin.customportal.use
@@ -111,9 +113,13 @@ better-ladder:
   # Universal toggle for quickclimb ladder feature
   quickclimb: true
 
+# Also called Better Enchanting Table
 # Lapis placed in enchanting table will stay there
+# item placed in enchanting slot will display above the enchanting table
 lapis-in-table:
   enabled: false 
+  # weather or not to store the item thats being enchanted too
+  store-item: true
   black-list-worlds: []
 
 # All recipes will be unlocked when player joins server
@@ -229,19 +235,11 @@ rotation-wrench:
     - DISPENSER
     - _STAIRS$
     - _TERRACOTTA$
+    - _TERRACOTTA$
     - COMPARATOR
     - REPEATER
     - CHEST
     - _LOG$
-  # configuration for item 
-  # use ignored-sections option above if the changes get reset after reload
-  item:
-    id: STICK
-    display: "&aRotation Wrench"
-    lore:
-      - "&6Right click a block to rotate"
-    options:
-      model: 100
 
 # Optionally use Resource pack to change the sprite of item [https://github.com/sachingorkar102/Tweakin-Resource-Pack]
 # Using a Glass Bottle at the cloud levels (126-132 by default) will get you a Bottled Cloud.
@@ -259,14 +257,6 @@ bottled-cloud:
   minimum-height: 126
   # maximum height for glass bottle to pickup cloud
   maximum-height: 132
-  # configuration of item
-  item:
-    id: GLASS_BOTTLE
-    display: "Bottled Cloud"
-    lore:
-      - "&7Right-Click in air to place cloud"
-    options: 
-      model: 101
 
 
 # Optionally use resource pack to change the item sprite [https://github.com/sachingorkar102/Tweakin-Resource-Pack]
@@ -281,16 +271,6 @@ trowel:
   # weather or not item should take damage on use, only use for damagable items like iron_hoe
   # Note: max uses of the item depends on what base material you are using example iron_hoe has 250 max durability meaning trowel will have 250 max uses
   take-damage: true
-  # configuration for item
-  item:
-    id: IRON_HOE
-    display: "&7Trowel"
-    flags:
-      - HIDE_ATTRIBUTES
-    options:
-      model: 102
-    lore:
-      - "&7Right-Click to place random blocks from hotbar"
 
 # Creepers will no longer explode, instead they will turn into twinkling fireworks
 confetti-creepers:
@@ -305,11 +285,15 @@ confetti-creepers:
 # Items can now be right clicked onto a Lava Bucket to destroy them forever.
 # Shulker Boxes and items that are immune to fire (eg. Netherite) can not be destroyed this way.
 # Items can only be destroyed if the lava bucket is in player's inventory
+# Permissions:
+  # tweakin.lavabuckettrashcan.dragdrop: permission for player to use drag and drop(destroy) feature of trash can
+  # tweakin.lavabuckettrashcan.gui: permission for player to use trash can gui (Disabled Temp.)
 lava-bucket-trash-can:
   enabled: false
   # item lore that will be shown when player fills up a lava bucket (keep empty to disable it)
   help-lore:
     - "&eRight Click a item onto bucket to destroy it."
+    - "&eRight Click in air to open Trash Can gui"
   # List of materials that cant be destroyed with this method,
   # Pro tip: 
     # use NAME$ to take those names into account which end with "NAME" eg. "SHULKER_BOX$"
@@ -329,18 +313,16 @@ lava-bucket-trash-can:
 slime-in-bucket:
   enabled: false
   black-list-worlds: []
+  # the value of y level below the slime in bucket will start detecting slimes
+  # default to 256 so slime chunk will be detected at any y level
+  max-y-level: 256
   # Custom Model data that will be used when the item is not in slime chunk
   model-undetected: 103
   # Custom Model data that will be used when the item is in a slime chunk
   model-detected: 104
   # what interval in ticks the runnable should run
   interval-ticks: 20
-  item:
-    id: SLIME_BALL
-    display: "Slime In A Bucket"
-    lore:
-      - "&eSlime will start jumping once inside a slime chunk"
-      - "&eLeft click on block to release the slime"
+  
 
 
 # You can pat the dogs. Sneak-Right click them with an empty hand to perform this glorious act.
@@ -383,7 +365,7 @@ better-sign-edit:
   enabled: false
   black-list-worlds: []
 
-# Breaking grass or crops with a hoe will break a 3x3 of them. A Diamond & Netherite Hoe will break a 5x5 instead.
+# Breaking grass or crops with a hoe (while sneaking) will break a 3x3 of them. A Diamond & Netherite Hoe will break a 5x5 instead.
 # If you put Fortune on the hoe, it'll also apply that effect to everything it breaks.
 hoe-harvesting:
   enabled: false
@@ -398,9 +380,16 @@ hoe-harvesting:
     diamond: 2
     netherite: 2
   # list of materials that can be harvested within range
+  # you can use tags too to consider a group of similar materials like FLOWERS and CROPS
+  # list of all valid tags can be found here https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Tag.html
   harvestable-materials:
     - GRASS
     - TALL_GRASS
+    - FLOWERS
+    - CROPS
+  # if set to false player will able to hoe-harvest even without sneaking 
+  require-sneaking: true  
+
 
 # Holding an Emerald Block causes nearby villagers to follow the player, much like animals do for food items. 
 villager-follow-emerald:
@@ -435,6 +424,7 @@ shear-item-frame:
   black-list-worlds: []
 
 # Snowballs and eggs will apply more knockback to entity on hit and also deal damage
+# Worldguard flag: tweakin-snowball-knockback [default to true]
 snowball-knockback:
   enabled: false
   # multiplier for knockback
@@ -453,13 +443,7 @@ infinity-water-bucket:
   cost: 2
   # weather or not dispensers can use infinity bucket like players
   dispenser-usable: true
-  item:
-    id: WATER_BUCKET
-    display: "&6Infinte Water Bucket"
-    enchants:
-      - INFINITY 1
-    lore:
-      - "&aThis bucket will last forever..."
+  
 
 # mobs have a chance to drop there heads on death,
 # each head configuration can be altered in plugins/Tweakin/heads.yml (restart the server for changes in heads.yml to take place)
@@ -492,13 +476,7 @@ armored-elytra:
   cost: 10
   # list of items that can be used to combine with elytra (only use chestplate item types)
   combineable-materials: [LEATHER_CHESTPLATE,IRON_CHESTPLATE,DIAMOND_CHESTPLATE,NETHERITE_CHESTPLATE,GOLDEN_CHESTPLATE,CHAINMAIL_CHESTPLATE]
-  item:
-    id: ELYTRA
-    display: "&eArmored Elytra"
-    lore:
-      - "&7Benifits of elytra and chestplate at once"
-    options:
-      model: 0
+  
 
 
 # a message a broadcasted to all players when a villager dies
@@ -508,3 +486,58 @@ armored-elytra:
 villager-death-message:
   enabled: true
   black-list-worlds: []      
+
+# Adding some more features to armor stand and giving players more control over them
+# /armorstand or /as can be used to edit a armorstand player is looking at with a gui
+# all the messages,titles and items from gui are configurable in messages.yml and items.yml
+# Better ArmorStands also adds preset poses which can be accessed through editor gui, this feature adds 20+ preset poses to choose from
+# Admins can add their own poses with /tw addpose [pose-id] [display-name] command whilist looking at the posed armorstand
+# to remove a existing pose use /tw removepose [pose-id] command 
+# Permissions:
+  # tweakin.betterarmorstands.armorswap: players with this permission will able to swap entire armor with armor stand
+  # tweakin.betterarmorstands.command: permission for /armorstand command
+  # tweakin.betterarmorstands.uuidlockbypass: players with this permission can edit armor stands even if its uuid locked
+  # tweakin.command.addpose: permission to use addpose command
+  # tweakin.command.removepose: permission to use remove pose command
+better-armorstands:
+  enabled: false  
+  black-list-worlds: []
+  # if set to false armor swaping between armor stand and player will be disabled
+  armor-swap: true
+  # if set to false armor stand will not spawn with arms by default
+  spawn-with-arms: true
+  # Aliases for /armorstand command
+  # Pro tip: use | to add more then one aliases
+  alias: as|armorstand|editarmorstand
+
+# REQUIRES better-armorstands to be enabled
+# A wand item to use to edit armor stands, rather then using /armorstand command
+# Permissions:
+  # tweakin.armorstandwand.use: permission to use the wand
+armorstand-wand:
+  enabled: false
+  craftable: true  
+  
+# NOTE: only works with mobs that were name tagged after this tweak was enabled
+# Shift+Right click a name tagged mob with shears to remove the name and get the nametag back 
+# Permissions:
+  # tweakin.shearnametag.use: Permission to use this tweak
+shear-name-tag:
+  enabled: false  
+  black-list-worlds: []
+
+# Lectern book page will reset to 0 when player closes it
+lectern-page-reset:
+  enabled: false
+  black-list-worlds: []
+
+# REQUIRES Resource pack for crafting table on stick item sprite
+# As name suggests crafting table and stick combined in crafting table gives crafting-table-on-stick
+# Middle Clicking the item in inventory will open a 3x3 crafting interface
+# Permissions:
+  # tweakin.craftingtableonstick.use: permission to use the item
+crafting-table-on-stick:
+  enabled: false
+  craftable: true
+  # if set to true player will able to use open crafting interface by just middle clicking crafting table item in inventory
+  works-with-crafting-table: false
